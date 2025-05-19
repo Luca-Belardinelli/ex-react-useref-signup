@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react"
+import { useState, useMemo, useRef } from "react"
 
 // Costanti per la validazione dei campi
 const letters = "abcdefghijklmnopqrstuvwxyz";
@@ -6,13 +6,16 @@ const numbers = "0123456789";
 const symbols = "!@#$%^&*()-_=+[]{}|;:'\",.<>?/`~";
 
 function App() {
-  // Dichiarazione degli stati per ogni campo del form utilizzando useState
-  const [fullname, setFullName] = useState('Luca');
+
+  // campi controllati
   const [username, setUserName] = useState('LucaB');
   const [password, setPassword] = useState('Pokemon14!!');
-  const [specialization, setSpecialization] = useState('frontend');
-  const [experienceYears, setExperienceYears] = useState('1');
   const [description, setDescription] = useState('sono uno studente');
+
+  // campi non controllati
+  const fullNameRef = useRef();
+  const specializationRef = useRef();
+  const experienceYearsRef = useRef();
 
 
   // Validazione dello username usando useMemo 
@@ -46,13 +49,17 @@ function App() {
   const handleSubmit = e => {
     e.preventDefault(); // Previene il comportamento di default del form
 
+    // valori non controllati
+    const fullname = fullNameRef.current.value;
+    const specialization = specializationRef.current.value;
+    const experienceYears = experienceYearsRef.current.value;
+
+
+
     // Validazione dei campi: verifica che tutti i campi siano compilati
     if (
-      !fullname.trim() ||
       !username.trim() ||
       !password.trim() ||
-      !specialization.trim() ||
-      !experienceYears.trim() ||
       !description.trim() ||
       !validUsername ||
       !validPassword ||
@@ -83,8 +90,7 @@ function App() {
         <p>Nome completo</p>
         <input
           type="text"
-          onChange={(e) => setFullName(e.target.value)}
-          value={fullname}
+          ref={fullNameRef}
         />
 
         {/* Campo per lo username */}
@@ -115,7 +121,8 @@ function App() {
 
         {/* Menu a tendina per la specializzazione */}
         <p>Specializzazione</p>
-        <select value={specialization} onChange={e => setSpecialization(e.target.value)}>
+        <select ref={specializationRef}>
+          <option value="">Seleziona</option>
           <option value="fullstack">Full Stack</option>
           <option value="frontend">Frontend</option>
           <option value="backend">Backend</option>
@@ -125,8 +132,7 @@ function App() {
         <p>Anni di esperienza</p>
         <input
           type="number"
-          onChange={(e) => setExperienceYears(e.target.value)}
-          value={experienceYears}
+          ref={experienceYearsRef}
         />
 
         {/* Area di testo per la descrizione  */}
@@ -145,7 +151,7 @@ function App() {
 
         {/* Pulsante per inviare il form */}
         <button type="submit">Registrati</button>
-      </form>
+      </form >
     </>
   )
 }
